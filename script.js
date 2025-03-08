@@ -1,4 +1,4 @@
-const numImages = 24;
+const numImages = 26;
 let currentMode = "view"; // Default mode
 let mysteryOpen = false; // Track whether mystery container is expanded
 let gameCode = ""
@@ -190,6 +190,7 @@ function createGame() {
     // Set the mystery person for the creator
     const mysteryIndex = Math.floor(random * selectedImages.length);
     const mysteryPerson = selectedImages[mysteryIndex];
+    shuffleArray(selectedImages);
 
     // Initialize the game with the selected images and mystery person
     initializeGame(selectedImages, mysteryPerson);
@@ -216,6 +217,7 @@ function joinGame(inputCode) {
     // Randomly select an index for the joiner's mystery person
     const joinerMysteryIndex = possibleIndices[Math.floor(Math.random() * possibleIndices.length)];
     const joinerMysteryPerson = selectedImages[joinerMysteryIndex];
+    shuffleArray(selectedImages);
 
     // Initialize the game with the selected images and mystery person
     initializeGame(selectedImages, joinerMysteryPerson);
