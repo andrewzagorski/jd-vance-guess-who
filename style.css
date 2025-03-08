@@ -1,0 +1,21 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    padding: 20px;
+    justify-content: center;
+}
+
+img {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    border: 2px solid black;
+    object-fit: cover; /* Ensures images fill the square without distortion */
+}
+
