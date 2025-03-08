@@ -27,14 +27,23 @@ function initializeGame(debugMode) {
 
     // Create images with click event listeners
     imageList.forEach(src => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+
+        const front = document.createElement("div");
+        front.classList.add("front");
         const img = document.createElement("img");
         img.src = src;
-        img.addEventListener("click", () => handleImageClick(img));
-        img.onerror = () => {
-            console.error(`Failed to load image: ${src}`);
-            img.src = "./images/placeholder.jpg"; // Fallback image
-        };
-        gameBoard.appendChild(img);
+        front.appendChild(img);
+
+        const back = document.createElement("div");
+        back.classList.add("back");
+
+        card.appendChild(front);
+        card.appendChild(back);
+
+        card.addEventListener("click", () => handleImageClick(card));
+        gameBoard.appendChild(card);
     });
 
     // Set up mystery person display
@@ -48,13 +57,15 @@ function initializeGame(debugMode) {
 }
 
 // Handle Image Click based on mode
-function handleImageClick(img) {
+function handleImageClick(card) {
     if (currentMode === "view") {
+        const img = card.querySelector("img");
         enlargeImage(img.src);
     } else if (currentMode === "flip") {
-        img.classList.toggle("blurred");
+        card.classList.toggle("flipped");
     } else if (currentMode === "highlight") {
-        img.classList.toggle("highlighted");
+        const front = card.querySelector(".front");
+        front.classList.toggle("highlighted");
     }
 }
 

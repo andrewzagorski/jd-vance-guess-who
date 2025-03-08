@@ -30,12 +30,85 @@ h1 {
     gap: 10px;
 }
 
-img {
+/* Card container */
+.card {
+    border: 4px solid transparent;
+    padding: 2px;
     width: 100px;
     height: 100px;
+    position: relative;
+    perspective: 1000px; /* Enable 3D perspective */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.3s ease;
     cursor: pointer;
-    border: 2px solid black;
-    object-fit: cover; /* Ensures images fill the square without distortion */
+    transform-style: preserve-3d; /* Ensure 3D transformations are applied */
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: -1; /* Place the shadow behind the card */
+    pointer-events: none; /* Ensure clicks pass through to the card */
+}
+
+/* Front and back sides */
+.front, .back {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    backface-visibility: hidden; /* Hide the back side when flipped */
+    border-radius: 10px;
+    transition: transform 0.5s ease;
+    transform-origin: center; /* Ensure the flip happens around the center */
+}
+
+/* Front side (image) */
+.front {
+    transform: rotateX(0deg);
+    background: linear-gradient(45deg, #667eea, #764ba2) border-box;
+    border: 4px solid transparent;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Ensure the image stays within the card */
+}
+
+.front img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Back side (blank card) */
+.back {
+    transform: rotateX(180deg);
+    background: linear-gradient(135deg, #667eea, #764ba2); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+    border: 4px solid transparent;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Flip animation */
+.card.flipped .front {
+    transform: rotateX(180deg);
+}
+
+.card.flipped .back {
+    transform: rotateX(0deg);
 }
 
 /* Mystery Person Section */
@@ -62,21 +135,24 @@ img {
     width: 200px;
     height: 200px;
     object-fit: cover;
-    border: 3px solid red;
+    background: linear-gradient(45deg, #667eea, #764ba2) border-box;
+    border: 4px solid transparent;
     border-radius: 10px; /* Rounded corners for the image */
 }
 
 /* Toggle Arrow */
 #mystery-toggle {
     position: absolute;
-    top: -20px;
+    top: -40px;
     left: 50%;
     transform: translateX(-50%);
     background: black;
     color: white;
-    padding: 5px 10px;
+    padding: 15px 25px;
     border-radius: 10px 10px 0 0;
+    font-size: 2.0rem; /* Larger font size */
     cursor: pointer;
+    transition: background 0.3s ease;
 }
 
 #mystery-toggle:hover {
@@ -88,20 +164,27 @@ img {
     position: fixed;
     top: 0;
     width: 100%;
-    background: black;
+    background: linear-gradient(135deg, #667eea, #764ba2); /* Gradient background */
     color: white;
     padding: 10px;
     text-align: center;
     z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    gap: 10px; /* Space between buttons */
 }
 
 .mode-btn {
-    background: gray;
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
     color: white;
-    padding: 10px;
-    margin: 5px;
+    padding: 10px 20px;
     border: none;
+    border-radius: 10px; /* Rounded corners */
     cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow */
 }
 
 /* Add shadows to buttons */
@@ -111,33 +194,29 @@ img {
 }
 
 .mode-btn:hover, #close-enlarged:hover, #reset-btn:hover {
+    background: rgba(255, 255, 255, 0.2); /* Lighten background on hover */
     transform: translateY(-2px);
     animation: bounce 0.5s ease;
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
 
 .mode-btn.active {
-    background: green;
+    background: rgba(255, 255, 255, 0.3); /* Highlight active button */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Shadow for active button */
+    font-weight: 600;
 }
 
-/* Game board */
-#game-board img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 4px solid transparent;
-    background: linear-gradient(45deg, #667eea, #764ba2) border-box;
-    border-radius: 10px;
-    padding: 2px; /* Adds space for the gradient border */
-}
-
-
-#game-board img:hover {
+.card:hover {
     transform: translateY(-5px); /* Slight lift on hover */
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card:hover::before {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.front.highlighted {
+    box-shadow: 0 0 20px rgba(100, 255, 150, 0.9); /* Green glow */
+    transform: scale(1.05); /* Slightly enlarge the image */
 }
 
 #enlarged-view {
@@ -190,19 +269,8 @@ img {
     transition: background 0.3s ease;
 }
 
-
 #close-enlarged:hover {
     background: #ff6b81;
-}
-
-/* Flip Down Mode */
-.blurred {
-    filter: blur(5px);
-}
-
-/* Highlight Mode */
-.highlighted {
-    border: 3px solid green;
 }
 
 /* Hide Elements */
@@ -216,7 +284,7 @@ img {
         font-size: 2rem;
     }
 
-    #game-board img {
+    .card {
         width: 80px;
         height: 80px;
     }
@@ -227,12 +295,20 @@ img {
     }
 
     #mode-bar {
-        flex-direction: column; /* Stack buttons vertically on small screens */
+        flex-wrap: wrap; /* Allow buttons to wrap if needed */
+        padding: 10px 5px; /* Reduce padding on small screens */
     }
 
     .mode-btn {
-        width: 100%; /* Full-width buttons */
-        margin: 5px 0;
+        padding: 8px 15px; /* Smaller padding for mobile */
+        font-size: 0.9rem; /* Smaller font size for mobile */
+    }
+
+    #mystery-toggle {
+        left: auto; /* Remove centering */
+        right: 20px; /* Position at the bottom right */
+        transform: none; /* Remove transform */
+        border-radius: 10px; /* Fully rounded corners */
     }
 }
 
