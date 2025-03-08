@@ -3,12 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guess Who</title>
+    <title>Guess Who?</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+
+    <!-- Mode Selection Bar -->
+    <div id="mode-bar">
+        <button class="mode-btn active" data-mode="view">View</button>
+        <button class="mode-btn" data-mode="flip">Flip Down</button>
+        <button class="mode-btn" data-mode="highlight">Highlight</button>
+    </div>
+
     <h1>Guess Who?</h1>
+
+    <!-- Game Board -->
     <div id="game-board"></div>
+
+    <!-- Enlarged Image View (Hidden by Default) -->
+    <div id="enlarged-view" class="hidden">
+        <img id="enlarged-img" src="" alt="Enlarged View">
+        <div id="enlarged-info">
+            <p id="enlarged-text"></p>
+        </div>
+        <button id="close-enlarged">✖</button>
+    </div>
+
+    <!-- Mystery Person Section -->
+    <div id="mystery-container">
+        <div id="mystery-person">
+            <p id="mystery-text"></p>
+            <img id="mystery-img" src="" alt="Mystery Person">
+        </div>
+        <div id="mystery-toggle">
+            <span id="toggle-arrow">⬆</span>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+
 </body>
 </html>

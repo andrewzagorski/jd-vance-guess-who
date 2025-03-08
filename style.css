@@ -1,14 +1,33 @@
 body {
     font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed; /* Ensures the gradient covers the entire page */
     text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
 }
 
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-top: 70px; /* Add margin to push the title below the mode bar */
+    padding: 20px 0; /* Optional: Add padding for better spacing */
+}
+
+/* Game board styles */
 #game-board {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 10px;
-    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
+    padding: 20px;
+    gap: 10px;
 }
 
 img {
@@ -19,3 +38,210 @@ img {
     object-fit: cover; /* Ensures images fill the square without distortion */
 }
 
+/* Mystery Person Section */
+#mystery-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Glass-morphism effect */
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+    color: white;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(100%); /* Hidden by default */
+}
+
+#mystery-person {
+    padding: 20px;
+}
+
+#mystery-img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border: 3px solid red;
+    border-radius: 10px; /* Rounded corners for the image */
+}
+
+/* Toggle Arrow */
+#mystery-toggle {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: black;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+}
+
+#mystery-toggle:hover {
+    background: gray;
+}
+
+/* Mode Selection Bar */
+#mode-bar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: black;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    z-index: 1000;
+}
+
+.mode-btn {
+    background: gray;
+    color: white;
+    padding: 10px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Add shadows to buttons */
+.mode-btn, #close-enlarged, #reset-btn {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mode-btn:hover, #close-enlarged:hover, #reset-btn:hover {
+    transform: translateY(-2px);
+    animation: bounce 0.5s ease;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mode-btn.active {
+    background: green;
+}
+
+/* Game board */
+#game-board img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 4px solid transparent;
+    background: linear-gradient(45deg, #667eea, #764ba2) border-box;
+    border-radius: 10px;
+    padding: 2px; /* Adds space for the gradient border */
+}
+
+
+#game-board img:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+#enlarged-view {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    backdrop-filter: blur(10px); /* Glass-morphism effect */
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center children horizontally */
+}
+
+#enlarged-img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px; /* Rounded corners for the image */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px; /* Space between image and text */
+}
+
+#enlarged-info {
+    margin-top: 15px;
+}
+
+#enlarged-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+#close-enlarged {
+    margin-top: 15px;
+    background: #ff4757; /* Red color for the close button */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+
+#close-enlarged:hover {
+    background: #ff6b81;
+}
+
+/* Flip Down Mode */
+.blurred {
+    filter: blur(5px);
+}
+
+/* Highlight Mode */
+.highlighted {
+    border: 3px solid green;
+}
+
+/* Hide Elements */
+.hidden {
+    display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    #game-board img {
+        width: 80px;
+        height: 80px;
+    }
+
+    #enlarged-img {
+        width: 200px;
+        height: 200px;
+    }
+
+    #mode-bar {
+        flex-direction: column; /* Stack buttons vertically on small screens */
+    }
+
+    .mode-btn {
+        width: 100%; /* Full-width buttons */
+        margin: 5px 0;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
