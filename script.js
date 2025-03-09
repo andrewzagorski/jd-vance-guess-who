@@ -1,7 +1,9 @@
-const numImages = 26;
+const numImages = 33;
 let currentMode = "view"; // Default mode
 let mysteryOpen = false; // Track whether mystery container is expanded
 let gameCode = ""
+const allImages = Array.from({ length: numImages }, (_, i) => `images/${i + 1}.jpg`); // Example: 50 images
+let suggestedQuestions = [];
 
 // Mode Switching – update active button and current mode
 document.querySelectorAll(".mode-btn").forEach(btn => {
@@ -60,6 +62,16 @@ document.getElementById("cancel-join").addEventListener("click", () => {
     document.getElementById("game-controls").classList.remove("hidden");
 });
 
+// Fetch the questions from the JSON file
+async function loadQuestions() {
+    try {
+        const response = await fetch("questions.json");
+        suggestedQuestions = await response.json();
+    } catch (error) {
+        console.error("Failed to load questions:", error);
+    }
+}
+
 function showGameContent() {
     document.getElementById("splash-screen").classList.add("hidden");
     document.getElementById("game-content").classList.remove("hidden");
@@ -106,12 +118,31 @@ function seededRandom(seed) {
 
 // Fisher-Yates shuffle algorithm to randomize array order
 function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
+    const arrClone = [...array];
+    for (let i = arrClone.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+        [arrClone[i], arrClone[j]] = [arrClone[j], arrClone[i]]; // Swap elements
     }
+    return arrClone;
 }
 
+// Populate the scrolling gallery
+function populateGallery() {
+    const galleryImages = document.getElementById("gallery-images");
+    const shuffledImages = shuffleArray(allImages);
+
+    // Add two copies of the shuffled images
+    shuffledImages.forEach(src => {
+        const img = document.createElement("img");
+        img.src = src;
+        galleryImages.appendChild(img);
+    });
+    shuffledImages.forEach(src => {
+        const img = document.createElement("img");
+        img.src = src;
+        galleryImages.appendChild(img);
+    });
+}
 
 // Handle Image Click based on mode
 function handleImageClick(card) {
@@ -184,16 +215,15 @@ function createGame() {
     const random = seededRandom(seed);
 
     // Select 24 images from a larger pool
-    const allImages = Array.from({ length: numImages }, (_, i) => `images/${i + 1}.jpg`); // Example: 50 images
     const selectedImages = selectRandomSubset(allImages, 24, random);
 
     // Set the mystery person for the creator
     const mysteryIndex = Math.floor(random * selectedImages.length);
     const mysteryPerson = selectedImages[mysteryIndex];
-    shuffleArray(selectedImages);
+    const shuffledImages = shuffleArray(selectedImages);
 
     // Initialize the game with the selected images and mystery person
-    initializeGame(selectedImages, mysteryPerson);
+    initializeGame(shuffledImages, mysteryPerson);
 }
 
 function joinGame(inputCode) {
@@ -204,7 +234,6 @@ function joinGame(inputCode) {
     const random = seededRandom(seed);
 
     // Select the same 24 images
-    const allImages = Array.from({ length: numImages }, (_, i) => `images/${i + 1}.jpg`);
     const selectedImages = selectRandomSubset(allImages, 24, random);
 
     const creatorMysteryIndex = Math.floor(random * selectedImages.length);
@@ -217,14 +246,45 @@ function joinGame(inputCode) {
     // Randomly select an index for the joiner's mystery person
     const joinerMysteryIndex = possibleIndices[Math.floor(Math.random() * possibleIndices.length)];
     const joinerMysteryPerson = selectedImages[joinerMysteryIndex];
-    shuffleArray(selectedImages);
+    const shuffledImages = shuffleArray(selectedImages);
 
     // Initialize the game with the selected images and mystery person
-    initializeGame(selectedImages, joinerMysteryPerson);
+    initializeGame(shuffledImages, joinerMysteryPerson);
     const displayCode = formattedCode.slice(0, 3) + "-" + formattedCode.slice(3);
     document.getElementById("game-code-display").textContent = `Game Code: ${displayCode}`;
     document.getElementById("join-game-form").classList.add("hidden");
     showGameContent();
+}
+
+function showRandomQuestion() {
+    if (suggestedQuestions.length === 0) return; // No questions loaded
+
+    const toast = document.getElementById("toast");
+    const toastMessage = document.getElementById("toast-message");
+
+    // Select a random question
+    const randomQuestion = 'Try asking: ' + suggestedQuestions[Math.floor(Math.random() * suggestedQuestions.length)];
+    toastMessage.textContent = randomQuestion;
+
+    // Show the toast
+    toast.classList.add("visible");
+
+    // Hide the toast after 5 seconds
+    setTimeout(() => {
+        toast.classList.remove("visible");
+    }, 10000);
+}
+
+function startQuestionInterval() {
+    const minInterval = 20000;
+    const maxInterval = 40000;
+
+    // Show the first question after a random delay
+    setTimeout(() => {
+        showRandomQuestion();
+        // Set up recurring intervals
+        setInterval(showRandomQuestion, minInterval + Math.random() * (maxInterval - minInterval));
+    }, minInterval + Math.random() * (maxInterval - minInterval));
 }
 
 function initializeGame(selectedImages, mysteryPerson) {
@@ -255,10 +315,14 @@ function initializeGame(selectedImages, mysteryPerson) {
     // Set the mystery person
     const mysteryNumber = mysteryPerson.match(/(\d+)\.jpg/)[1];
     document.getElementById("mystery-img").src = mysteryPerson;
-    document.getElementById("mystery-text").textContent = `Your mystery person is #${mysteryNumber}`;
+    document.getElementById("mystery-text").textContent = `Your mystery JD is #${mysteryNumber}`;
 
     // Expand mystery container by default
     if (!mysteryOpen) {
         toggleMystery();
     }
+    startQuestionInterval();
 }
+
+populateGallery();
+loadQuestions();
